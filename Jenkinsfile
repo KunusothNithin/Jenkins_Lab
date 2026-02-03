@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,20 +13,22 @@ pipeline {
             }
         }
 
-        stage('Build JAR') {
+        stage('Build & Test JAR') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean test package'
             }
         }
     }
 
     post {
         success {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-            echo 'JAR file built successfully'
+            archiveArtifacts artifacts: 'target/*.jar'
+            echo 'Sample JAR built and archived successfully!'
         }
         failure {
-            echo 'Build failed'
+            echo 'Build or test failed'
         }
     }
 }
+
+
