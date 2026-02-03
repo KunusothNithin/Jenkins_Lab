@@ -9,21 +9,22 @@ pipeline {
         }
 
         stage('Compile Java') {
-            steps {
-                sh '''
-                    mkdir -p out
-                    javac -d out $(find src -name "*.java")
-                '''
-            }
-        }
+    steps {
+        sh '''
+            mkdir -p out
+            javac -d out *.java
+        '''
+    }
+}
 
-        stage('Run Java') {
-            steps {
-                sh '''
-                    java -cp out Main
-                '''
-            }
-        }
+stage('Run Java') {
+    steps {
+        sh '''
+            java -cp out Main
+        '''
+    }
+}
+
     }
 
     post {
