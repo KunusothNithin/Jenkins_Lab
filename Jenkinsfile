@@ -4,26 +4,31 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                git url: 'https://github.com/KunusothNithin/Jenkins_Lab.git', branch: 'main'
+                git branch: 'main', url: 'https://github.com/KunusothNithin/Jenkins_Lab.git'
             }
         }
 
         stage('Compile Java') {
             steps {
                 sh '''
-                    # Create output directory
                     mkdir -p out
-
-                    # Compile all Java files in repo root
                     javac -d out *.java
                 '''
             }
         }
 
-        stage('Run Java') {
+        stage('Create JAR') {
             steps {
                 sh '''
-                    # Run the main class (replace Sample with your main class name if different)
+                    jar cf MyApp.jar -C out .
+                    echo "JAR created successfully!"
+                '''
+            }
+        }
+
+        stage('Run JAR') {
+            steps {
+                sh '''
                     java -cp out Sample
                 '''
             }
@@ -32,7 +37,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build and run succeeded!"
+            echo "✅ Build, JAR creation, and run succeeded!"
         }
         failure {
             echo "❌ Build or run failed."
