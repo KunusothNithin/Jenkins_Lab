@@ -1,34 +1,37 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'java-17'
-        maven 'maven-3'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                checkout scm
+                git url: 'https://github.com/KunusothNithin/Jenkins_Lab.git', branch: 'main'
             }
         }
 
-        stage('Build & Test JAR') {
+        stage('Compile Java') {
             steps {
-                sh 'mvn clean test package'
+                sh '''
+                    mkdir -p out
+                    javac -d out $(find src -name "*.java")
+                '''
+            }
+        }
+
+        stage('Run Java') {
+            steps {
+                sh '''
+                    java -cp out Main
+                '''
             }
         }
     }
 
     post {
         success {
-            archiveArtifacts artifacts: 'target/*.jar'
-            echo 'Sample JAR built and archived successfully!'
+            echo "Build and run succeeded!"
         }
         failure {
-            echo 'Build or test failed'
+            echo "Build or run failed."
         }
     }
 }
-
-
