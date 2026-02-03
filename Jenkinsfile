@@ -9,30 +9,33 @@ pipeline {
         }
 
         stage('Compile Java') {
-    steps {
-        sh '''
-            mkdir -p out
-            javac -d out *.java
-        '''
-    }
-}
+            steps {
+                sh '''
+                    # Create output directory
+                    mkdir -p out
 
-stage('Run Java') {
-    steps {
-        sh '''
-            java -cp out Main
-        '''
-    }
-}
+                    # Compile all Java files in repo root
+                    javac -d out *.java
+                '''
+            }
+        }
 
+        stage('Run Java') {
+            steps {
+                sh '''
+                    # Run the main class (replace Sample with your main class name if different)
+                    java -cp out Sample
+                '''
+            }
+        }
     }
 
     post {
         success {
-            echo "Build and run succeeded!"
+            echo "✅ Build and run succeeded!"
         }
         failure {
-            echo "Build or run failed."
+            echo "❌ Build or run failed."
         }
     }
 }
